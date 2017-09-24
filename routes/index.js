@@ -1,5 +1,6 @@
 module.exports.index = (req,res) => {
-  res.render('index',{cookie: JSON.stringify(req.cookies)});
+  res.cookie('indexCookie','set cookie');
+  res.render('index',{cookie: JSON.stringify(req.cookies),session:JSON.stringify(req.session)});
 }
 
 module.exports.login = (req,res) => {

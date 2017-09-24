@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 //var index = require('./routes/index');
@@ -23,6 +24,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({secret:'ZtCMzUAgPL',saveUninitialized:true,resave:false}));
+app.use(function(req, res, next){
+  if(req.session.pageCount)
+    req.session.pageCount++;
+  else
+    req.session.pageCount = 1;
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 app.locals.siteName = "Express site";
 app.get('/', routes.index);
