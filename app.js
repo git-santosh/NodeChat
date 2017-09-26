@@ -3,11 +3,16 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 var session = require('express-session');
-var redisStore = require('connect-redis')(session);
+//var redisStore = require('connect-redis')(session);
+const MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
-
+const dbURL = "mongodb://localhost/nodechat";
+mongoose.Promise = global.Promise;
+mongoose.connect(dbURL).then(() => console.log('connected to DB'))
+.catch(err => console.log(err));
 
 var routes = require('./routes');
 var app = express();
@@ -24,7 +29,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('secret'));
-app.use(session({secret:'ZtCMzUAgPL',saveUninitialized:true,resave:true,store:new redisStore({url:'redis://localhost'})}));
+//app.use(session({secret:'ZtCMzUAgPL',saveUninitialized:true,resave:true,store:new redisStore({url:'redis://localhost'})}));
+app.use(session({
+  secret: "ZtCMzUAgPL",
+  resave: true,
+  saveUninitialized: true,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
 // app.use(function(req, res, next){
 //   if(req.session.pageCount)
 //     req.session.pageCount++;
