@@ -7,8 +7,10 @@ const mongoose = require('mongoose');
 var session = require('express-session');
 //var redisStore = require('connect-redis')(session);
 const MongoStore = require('connect-mongo')(session);
+const csrf = require('csurf');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
+var util = require('./middleware/utilities');
 const dbURL = "mongodb://localhost/nodechat";
 mongoose.Promise = global.Promise;
 mongoose.connect(dbURL).then(() => console.log('connected to DB'))
@@ -36,6 +38,8 @@ app.use(session({
   saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
+app.use(csrf());
+app.use(util.csrf);
 // app.use(function(req, res, next){
 //   if(req.session.pageCount)
 //     req.session.pageCount++;
