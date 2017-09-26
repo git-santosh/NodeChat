@@ -4,10 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var redisStore = require('connect-redis')(session);
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
-//var index = require('./routes/index');
-//var users = require('./routes/users');
+
 
 var routes = require('./routes');
 var app = express();
@@ -23,15 +23,15 @@ app.set('view options', {defaultLayout: 'layout'});
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(session({secret:'ZtCMzUAgPL',saveUninitialized:true,resave:false}));
-app.use(function(req, res, next){
-  if(req.session.pageCount)
-    req.session.pageCount++;
-  else
-    req.session.pageCount = 1;
-  next();
-});
+app.use(cookieParser('secret'));
+app.use(session({secret:'ZtCMzUAgPL',saveUninitialized:true,resave:true,store:new redisStore({url:'redis://localhost'})}));
+// app.use(function(req, res, next){
+//   if(req.session.pageCount)
+//     req.session.pageCount++;
+//   else
+//     req.session.pageCount = 1;
+//   next();
+// });
 app.use(express.static(path.join(__dirname, 'public')));
 app.locals.siteName = "Express site";
 app.get('/', routes.index);
@@ -40,7 +40,6 @@ app.post('/login',routes.loginProcess);
 app.get('/chat',routes.chat);
 app.get('/account/login',routes.login);
 
-//app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(errorHandlers.notFound);
