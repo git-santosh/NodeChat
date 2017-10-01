@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('NodeChat:server');
 var http = require('http');
-
+require('dotenv').config({path:'.env'});
 /**
  * Get port from environment and store in Express.
  */
