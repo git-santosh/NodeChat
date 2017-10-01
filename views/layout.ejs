@@ -27,6 +27,17 @@
 				<li><a href="/chat">chat</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+						<% if(isAuthenticated){ %>
+							<a href="#" class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+									<span class="glyphicon glyphicon-user"></span> <%= user.username %> 
+									<span class="caret"></span>
+						  </a>
+						 <% } %>
+						<ul class="dropdown-menu">
+            <li><a href="/logOut">Log out</a></li>
+          </ul>				
+				</li>
 				<li><a href="#"><span class="glyphicon glyphicon-comment"></span><span class="badge badge-notify">1</span>Notification</a></li>
 			</ul>
 		</div>
