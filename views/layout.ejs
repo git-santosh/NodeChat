@@ -23,7 +23,7 @@
 			</div>
        <div class="collapse navbar-collapse" id="mynavbar">
 		   <ul class="nav navbar-nav">
-				<li class="active"><a href="/login">login</a></li>
+				<li class="active"><a href=<%- routes.login %>>login</a></li>
 				<li><a href="/chat">chat</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
@@ -35,7 +35,7 @@
 						  </a>
 						 <% } %>
 						<ul class="dropdown-menu">
-            <li><a href="/logOut">Log out</a></li>
+            <li><a href=<%- routes.logout %>>Log out</a></li>
           </ul>				
 				</li>
 				<li><a href="#"><span class="glyphicon glyphicon-comment"></span><span class="badge badge-notify">1</span>Notification</a></li>

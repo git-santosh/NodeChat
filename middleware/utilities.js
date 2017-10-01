@@ -1,3 +1,4 @@
+var config = require('../config/routes');
 module.exports.csrf = (req, res, next) => {
     res.locals.token = req.csrfToken();
     next();
@@ -17,7 +18,7 @@ module.exports.requireAuthentication =(req,res,next) => {
     next(); //If you are authenticated, run the next
   }else
   {
-    res.redirect('/login');
+    res.redirect(config.routes.login);
   }
 }
 module.exports.auth = (username, password, session) => {
@@ -31,4 +32,9 @@ module.exports.auth = (username, password, session) => {
 module.exports.logOut = function logOut(session){
   session.isAuthenticated = false;
   delete session.user;
+};
+exports.templateRoutes = function templateRoutes(req, res, next){
+  console.log(config.routes);
+  res.locals.routes = config.routes;
+  next();
 };

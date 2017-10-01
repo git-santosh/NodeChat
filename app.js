@@ -10,11 +10,12 @@ const mongoose   = require('mongoose');
 const csrf       = require('csurf');
 var bodyParser   = require('body-parser');
 var partials     = require('express-partials');
-
+var flash = require('connect-flash');
 //Defined Middleware
 var util         = require('./middleware/utilities');
 var errorHandlers= require('./middleware/errorhandlers');
 var routes       = require('./routes');
+var config       = require('./config/routes');
 require('dotenv').config({path:'.env'});
 
 /**
@@ -38,11 +39,11 @@ app.set('view options', {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 // To parse every cookies and it must use before expressSession
-app.use(cookieParser("ZtCMzUAgPL"));
+app.use(cookieParser(process.env.secret));
 
 
 app.use(session({
-  secret: "ZtCMzUAgPL",
+  secret: process.env.secret,
   resave: true,
   saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
@@ -68,15 +69,18 @@ app.use(bodyParser.urlencoded({
 app.use(csrf());
 app.use(util.csrf);
 app.use(util.authenticated);
+app.use(flash());
+app.use(util.templateRoutes);
 app.locals.siteName = "Express site";
 
 //routes define 
 app.get('/', routes.index);
-app.get('/login', routes.login);
-app.post('/login', routes.loginProcess);
+app.get(config.routes.login, routes.login);
+app.post(config.routes.login, routes.loginProcess);
+app.get(config.routes.logout, routes.logOut);
 app.get('/chat',[util.requireAuthentication] , routes.chat);
 app.get('/account/login', routes.login);
-app.get('/logout', routes.logOut);
+
 // catch 404 and forward to error handler
 app.use(errorHandlers.notFound);
 
