@@ -25,5 +25,6 @@ module.exports.chat = (req,res) => {
 
 module.exports.logOut = (req,res) => {
   util.logOut(req.session);
+  req.logout();
   res.redirect('/');
 }

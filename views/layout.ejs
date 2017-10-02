@@ -23,14 +23,14 @@
 			</div>
        <div class="collapse navbar-collapse" id="mynavbar">
 		   <ul class="nav navbar-nav">
-				<li class="active"><a href=<%- routes.login %>>login</a></li>
+				<li class="active"><a href=<%= routes.login %>>login</a></li>
 				<li><a href="/chat">chat</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 						<% if(isAuthenticated){ %>
 							<a href="#" class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-									<span class="glyphicon glyphicon-user"></span> <%= user.username %> 
+									<span class="glyphicon glyphicon-user"></span> <%= user.displayName %> 
 									<span class="caret"></span>
 						  </a>
 						 <% } %>

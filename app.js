@@ -10,14 +10,16 @@ const mongoose   = require('mongoose');
 const csrf       = require('csurf');
 var bodyParser   = require('body-parser');
 var partials     = require('express-partials');
-var flash = require('connect-flash');
+var flash        = require('connect-flash');
 //Defined Middleware
 var util         = require('./middleware/utilities');
 var errorHandlers= require('./middleware/errorhandlers');
 var routes       = require('./routes');
 var config       = require('./config/routes');
+var passport     = require('./passport/index');
 require('dotenv').config({path:'.env'});
 
+require('./passport/facebook');
 /**
  * MongoDB connection code
  *  @param mongoURL
@@ -68,9 +70,14 @@ app.use(bodyParser.urlencoded({
 
 app.use(csrf());
 app.use(util.csrf);
-app.use(util.authenticated);
-app.use(flash());
 app.use(util.templateRoutes);
+app.use(util.authenticated);
+
+app.use(flash());
+
+app.use(passport.passport.initialize());
+app.use(passport.passport.session()); // always after express sesssion because Passport extends Express' session
+
 app.locals.siteName = "Express site";
 
 //routes define 
@@ -78,9 +85,9 @@ app.get('/', routes.index);
 app.get(config.routes.login, routes.login);
 app.post(config.routes.login, routes.loginProcess);
 app.get(config.routes.logout, routes.logOut);
-app.get('/chat',[util.requireAuthentication] , routes.chat);
+app.get(config.routes.chat,[util.requireAuthentication] , routes.chat);
 app.get('/account/login', routes.login);
-
+passport.routes(app);
 // catch 404 and forward to error handler
 app.use(errorHandlers.notFound);
 

@@ -4,13 +4,14 @@ module.exports.csrf = (req, res, next) => {
     next();
 };
 //We will store whether or not someone is authenticated in the session.
-module.exports.authenticated = ( req,res,next ) => {
-  res.locals.isAuthenticated = req.session.isAuthenticated;
-  if (req.session.isAuthenticated) {
-     res.locals.user = req.session.user;
-  }
-  next();
+module.exports.authenticated = function authenticated(req, res, next){
+// req.session.isAuthenticated = req.session.passport.user !== undefined;
+res.locals.isAuthenticated = req.session.isAuthenticated;
+if (req.session.isAuthenticated) {
+res.locals.user = req.session.passport.user;
 }
+next();
+};
 //middleware to check to see if someone is authenticated
 module.exports.requireAuthentication =(req,res,next) => {
   if (req.session.isAuthenticated)
@@ -31,10 +32,10 @@ module.exports.auth = (username, password, session) => {
 }
 module.exports.logOut = function logOut(session){
   session.isAuthenticated = false;
-  delete session.user;
+  //delete session.user;
 };
-exports.templateRoutes = function templateRoutes(req, res, next){
-  console.log(config.routes);
+exports.templateRoutes = (req, res, next) => {
+//  console.log(config.routes);
   res.locals.routes = config.routes;
   next();
 };
