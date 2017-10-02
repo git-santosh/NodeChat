@@ -17,6 +17,7 @@ var errorHandlers= require('./middleware/errorhandlers');
 var routes       = require('./routes');
 var config       = require('./config/routes');
 var passport     = require('./passport/index');
+const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 require('dotenv').config({path:'.env'});
 
 require('./passport/facebook');
@@ -85,7 +86,7 @@ app.get('/', routes.index);
 app.get(config.routes.login, routes.login);
 app.post(config.routes.login, routes.loginProcess);
 app.get(config.routes.logout, routes.logOut);
-app.get(config.routes.chat,[util.requireAuthentication] , routes.chat);
+app.get(config.routes.chat, ensureLoggedIn('/login') , routes.chat);
 app.get('/account/login', routes.login);
 passport.routes(app);
 // catch 404 and forward to error handler
@@ -97,8 +98,8 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.locals.status = err.status;
-  res.locals.user = {username : ""};
-  res.locals.isAuthenticated = false;
+  //res.locals.user = {username : ""};
+  //res.locals.isAuthenticated = false;
   // render the error page
   res.status(err.status || 500);
   res.render('error');

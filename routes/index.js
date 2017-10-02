@@ -1,5 +1,7 @@
 var util = require('../middleware/utilities');
 var config = require('../config/routes');
+const User = require('../models/User');
+
 module.exports.index = (req,res) => {
   //res.cookie('indexCookie','set cookie');
   res.render('index');
@@ -20,7 +22,13 @@ module.exports.loginProcess = (req,res) => {
 }
 
 module.exports.chat = (req,res) => {
-  res.render('Chat');
+  User.findOne({ "_id": req.session.passport.user }, (err, user) => {
+    if (err) { return err; }
+    res.locals.isAuthenticated = true;
+      res.locals.user = {username: user.provider_name}; 
+      return res.render('Chat');
+  });
+  
 }
 
 module.exports.logOut = (req,res) => {
