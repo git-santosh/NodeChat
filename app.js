@@ -21,6 +21,7 @@ const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
 require('dotenv').config({path:'.env'});
 
 require('./passport/facebook');
+require('./passport/google');
 /**
  * MongoDB connection code
  *  @param mongoURL

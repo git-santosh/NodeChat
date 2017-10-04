@@ -2,13 +2,13 @@ const passport = require('passport');
 const fbStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
 const config = require('../config/routes');
+require('dotenv').config({path:'.env'});
 
 passport.use(new fbStrategy({
-    clientID :config.facebook.appID,
-    clientSecret: config.facebook.appSecret,
+    clientID :process.env.facebookAppID,
+    clientSecret:process.env.facebookAppSecret,
     callbackURL: config.host + config.routes.facebookAuthCallback
 },(accessToken, refreshToken, profile, done) => {
-   // console.log('accessToken :'+accessToken +'\n refreshToken :'+refreshToken+'\n Profile :'+JSON.stringify(profile));
     User.findOne({provider_id : profile.id}, (err,user) =>{
         if(err){
             return done(err);
@@ -25,7 +25,6 @@ passport.use(new fbStrategy({
             if(err){
                 return done(err);
             }
-            console.log(newUser);
             done(null,newUser);
         })
     })

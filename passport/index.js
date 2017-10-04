@@ -21,6 +21,16 @@ var routes = (app) => {
         failureRedirect: config.routes.login, 
         failureFlash: true
     }));
+    //The scope tells Google what we want to access from the user.
+    //Facebook also can use scope. If you do not specify a scope,Facebook will use a default scope
+    app.get(config.routes.googleAuth,passport.authenticate('google',{
+        scope:['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email']
+    }));
+    app.get(config.routes.googleAuthCallback,passport.authenticate('google',{
+        successRedirect: config.routes.chat, 
+        failureRedirect: config.routes.login, 
+        failureFlash: true
+    }));
 };
 
 exports.passport = passport;
