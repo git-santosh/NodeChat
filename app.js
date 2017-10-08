@@ -12,6 +12,9 @@ var bodyParser       = require('body-parser');
 var partials         = require('express-partials');
 var flash            = require('connect-flash');
 var expressValidator = require('express-validator');
+var compression = require('compression');
+var helmet = require('helmet');
+
 //Defined Middleware
 var util             = require('./middleware/utilities');
 var errorHandlers    = require('./middleware/errorhandlers');
@@ -47,7 +50,8 @@ app.set('view engine', 'ejs');
 app.set('view options', {
   defaultLayout: 'layout'
 });
-
+app.use(compression()); //Compress all routes
+app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 // To parse every cookies and it must use before expressSession
 app.use(cookieParser(process.env.secret));
