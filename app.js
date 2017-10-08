@@ -1,27 +1,33 @@
-var express      = require('express');
-var path         = require('path');
-var favicon      = require('serve-favicon');
-var logger       = require('morgan');
-var cookieParser = require('cookie-parser');
-var session      = require('express-session');
-//var redisStore   = require('connect-redis')(session);
-const MongoStore = require('connect-mongo')(session);
-const mongoose   = require('mongoose');
-const csrf       = require('csurf');
-var bodyParser   = require('body-parser');
-var partials     = require('express-partials');
-var flash        = require('connect-flash');
+var express          = require('express');
+var path             = require('path');
+var favicon          = require('serve-favicon');
+var logger           = require('morgan');
+var cookieParser     = require('cookie-parser');
+var session          = require('express-session');
+//var redisStore       = require('connect-redis')(session);
+const MongoStore     = require('connect-mongo')(session);
+const mongoose       = require('mongoose');
+const csrf           = require('csurf');
+var bodyParser       = require('body-parser');
+var partials         = require('express-partials');
+var flash            = require('connect-flash');
+var expressValidator = require('express-validator');
 //Defined Middleware
-var util         = require('./middleware/utilities');
-var errorHandlers= require('./middleware/errorhandlers');
-var routes       = require('./routes');
-var config       = require('./config/routes');
-var passport     = require('./passport/index');
+var util             = require('./middleware/utilities');
+var errorHandlers    = require('./middleware/errorhandlers');
+var index            = require('./routes');
+var auth             = require('./routes/auth'); 
+var chat             = require('./routes/chat'); 
+var config           = require('./config/routes');
+var passport         = require('passport');
 const { ensureLoggedIn, ensureLoggedOut } = require('connect-ensure-login');
+
 require('dotenv').config({path:'.env'});
 
-require('./passport/facebook');
+require('./passport/index');
 require('./passport/google');
+require('./passport/facebook');
+
 /**
  * MongoDB connection code
  *  @param mongoURL
@@ -41,15 +47,14 @@ app.set('view engine', 'ejs');
 app.set('view options', {
   defaultLayout: 'layout'
 });
+
 app.use(express.static(path.join(__dirname, 'public')));
 // To parse every cookies and it must use before expressSession
 app.use(cookieParser(process.env.secret));
-
-
 app.use(session({
   secret: process.env.secret,
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
@@ -63,33 +68,32 @@ app.use(session({
 //   })
 // }));
 // configure the app to use bodyParser()
+
+
+//app.use(util.setVariables);
+//app.use(util.templateRoutes);
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
-
-
+app.use(expressValidator()); // Add this after the bodyParser middlewares!
 app.use(csrf());
 app.use(util.csrf);
-app.use(util.templateRoutes);
-app.use(util.authenticated);
-
 app.use(flash());
 
-app.use(passport.passport.initialize());
-app.use(passport.passport.session()); // always after express sesssion because Passport extends Express' session
 
+app.use(passport.initialize());
+app.use(passport.session()); // always after express sesssion because Passport extends Express' session
 app.locals.siteName = "Express site";
-
+app.locals.routes = config.routes; 
+app.use(util.authenticated);
 //routes define 
-app.get('/', routes.index);
-app.get(config.routes.login, routes.login);
-app.post(config.routes.login, routes.loginProcess);
-app.get(config.routes.logout, routes.logOut);
-app.get(config.routes.chat, ensureLoggedIn('/login') , routes.chat);
-app.get('/account/login', routes.login);
-passport.routes(app);
+app.use('/', index);
+app.use('/auth',ensureLoggedOut(),auth);
+app.use(config.routes.chat,ensureLoggedIn('/auth/login') , chat);
+//passport.routes(app);
 // catch 404 and forward to error handler
 app.use(errorHandlers.notFound);
 
@@ -99,8 +103,6 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.locals.status = err.status;
-  //res.locals.user = {username : ""};
-  //res.locals.isAuthenticated = false;
   // render the error page
   res.status(err.status || 500);
   res.render('error');

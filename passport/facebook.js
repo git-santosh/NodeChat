@@ -2,7 +2,7 @@ const passport = require('passport');
 const fbStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
 const config = require('../config/routes');
-require('dotenv').config({path:'.env'});
+console.log('FB ID :'+process.env.facebookAppID);
 
 passport.use(new fbStrategy({
     clientID :process.env.facebookAppID,

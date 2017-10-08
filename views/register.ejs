@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="post" action="<%= routes.register %>">
+                    <% if (message.length > 0) { %>
+                            <div class="alert alert-danger"><%= message %></div>
+                    <% } %>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="text" class="form-control" id="email" placeholder="E-mail" name="email">
+                       
+                    </div>
+                     <div class="form-group">
+                        <label for="password">password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                    </div>
+                     <div class="form-group" data-toggle="buttons">
+                        <label for="gender" class="btn btn-primary active">
+                            <input type="radio" name="gender" id="male" value="Male" checked> Male
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="gender" id="female" value="Female"> Female
+                        </label>
+                    </div> 
+                    <!-- <div class="checkbox">
+                        <label>
+                            <input type="checkbox" data-toggle="toggle" data-on="Female" data-off="Male" data-onstyle="success" data-offstyle="info" name="gender">
+                        </label>
+                    </div> -->
+                
+                    <input type="hidden" name="_csrf" value="<%= token %>">
+                    <input type="submit" class="btn btn-primary btn-block" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

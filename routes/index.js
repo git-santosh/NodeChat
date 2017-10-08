@@ -1,38 +1,35 @@
 var util = require('../middleware/utilities');
 var config = require('../config/routes');
-const User = require('../models/User');
+let express = require('express');
+let router = express.Router();
+let User = require('../models/User').userModel;
 
-module.exports.index = (req,res) => {
+router.get('/',(req,res) => {
   //res.cookie('indexCookie','set cookie');
   res.render('index');
-}
+})
 
-module.exports.login = (req,res) => {
-  res.render('login',{title: 'Login', message: req.flash('error')});
-}
-module.exports.loginProcess = (req,res) => {
-  var isAuth = util.auth(req.body.username, req.body.password, req.session);
-  if(isAuth){
-    res.redirect('/chat');
-  }else 
-  {
-    req.flash('error', 'Wrong Username or Password');
-    res.redirect(config.routes.login); 
-  }
-}
+router.get(config.routes.register,(req,res) => {
+ res.render('register',{ message: req.flash('error')});
+});
 
-module.exports.chat = (req,res) => {
-  User.findOne({ "_id": req.session.passport.user }, (err, user) => {
-    if (err) { return err; }
-    res.locals.isAuthenticated = true;
-      res.locals.user = {username: user.provider_name}; 
-      return res.render('Chat');
+router.post(config.routes.register, (req,res) => {
+  let info = req.body;
+  let userSchema = new User({
+    provider_id : "",
+    provider_name : info.name,
+    provider : "local",
+    email :info.email,
+    gender : (Object.getOwnPropertyNames(info)[3] == "gender") ? info.gender : "NULL",
+    password : info.password
+  });
+  userSchema.save().then((result)=>{
+    res.redirect(config.routes.login);   
+  }).catch(function(err){
+    req.flash('error', err.errmsg);
+    res.redirect(config.routes.register); 
   });
   
-}
+});
 
-module.exports.logOut = (req,res) => {
-  util.logOut(req.session);
-  req.logout();
-  res.redirect('/');
-}
+module.exports = router;
