@@ -37,7 +37,7 @@ require('./passport/facebook');
  */
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.mongoURL).then(() => console.log('connected to DB'))
+mongoose.connect(process.env.mongoURL, { useMongoClient: true }).then(() => console.log('connected to DB'))
 .catch(err => console.log(err));
 
 

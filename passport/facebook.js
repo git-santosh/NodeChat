@@ -2,7 +2,6 @@ const passport = require('passport');
 const fbStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User');
 const config = require('../config/routes');
-console.log('FB ID :'+process.env.facebookAppID);
 
 passport.use(new fbStrategy({
     clientID :process.env.facebookAppID,
