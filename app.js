@@ -50,6 +50,7 @@ app.set('view engine', 'ejs');
 app.set('view options', {
   defaultLayout: 'layout'
 });
+app.set('port', (process.env.PORT || 5000));
 app.use(compression()); //Compress all routes
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -112,4 +113,6 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
