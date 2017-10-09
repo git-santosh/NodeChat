@@ -13,7 +13,7 @@ require('dotenv').config({path:'.env'});
  */
 
 var port = normalizePort(process.env.myport || process.env.PORT || 80);
-
+var server_host = process.env.myhost || '0.0.0.0';
 app.set('port', port);
 
 /**
@@ -26,7 +26,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port,server_host);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -87,6 +87,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-    console.log('Listening on ' + bind);
+    console.log('Server listening at http://' + server.address().address + ':' + server.address().port);
   //debug('Listening on ' + bind);
 }
