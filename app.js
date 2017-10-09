@@ -33,11 +33,11 @@ require('./passport/facebook');
 
 /**
  * MongoDB connection code
- *  @param mongoURL
+ *  @param PROD_MONGODB
  */
-
+var uri = process.env.PROD_MONGODB ;
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.PROD_MONGODB, { useMongoClient: true }).then(() => console.log('connected to DB'))
+mongoose.connect(uri.toString(), { useMongoClient: true }).then(() => console.log('connected to DB'))
 .catch(err => console.log(err));
 
 
