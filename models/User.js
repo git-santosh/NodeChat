@@ -48,7 +48,7 @@ let userModel =(()  =>{
         if (!user.created_at){
             user.created_at = currentDate;
         }
-        if(!user.provider_id == user.provider_id != ""){
+        if(!user.provider_id && user.provider_id == ""){
              passwordAuth.passwordCreate(user.password,function(callback){
             user.salt = callback.salt ;
             user.work = config.crypto.workFactor,

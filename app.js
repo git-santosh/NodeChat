@@ -93,6 +93,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // always after express sesssion because Passport extends Express' session
 app.locals.siteName = "Express site";
 app.locals.routes = config.routes; 
+
 app.use(util.authenticated);
 //routes define 
 app.use('/', index);

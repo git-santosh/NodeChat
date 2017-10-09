@@ -8,18 +8,14 @@ module.exports.csrf = (req, res, next) => {
 //We will store whether or not someone is authenticated in the session.
 module.exports.authenticated =(req, res, next) => {
   console.log('secound')
-  if(!req.session.isAuthenticated){
+  if(!req.isAuthenticated()){
       console.log('count auth');
       req.session.isAuthenticated =false;
-      req.session.user = {userName :""};
-      
-     
-  }
-      
-
+      req.session.user = {userName :""};  
+  } 
     res.locals.isAuthenticated =req.session.isAuthenticated;
      res.locals.user = req.session.user;
-     res.url = req.url;
+     res.locals.url = req.url;
     //console.log(JSON.stringify(res.session));
     next();
 };

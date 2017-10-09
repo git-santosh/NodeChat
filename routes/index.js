@@ -24,7 +24,7 @@ router.post(config.routes.register, (req,res) => {
     password : info.password
   });
   userSchema.save().then((result)=>{
-    res.redirect(config.routes.login);   
+    res.render('register',{message :'Register Successfully..!!!'})
   }).catch(function(err){
     req.flash('error', err.errmsg);
     res.redirect(config.routes.register); 
