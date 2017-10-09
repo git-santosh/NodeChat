@@ -12,12 +12,14 @@ module.exports.authenticated =(req, res, next) => {
       console.log('count auth');
       req.session.isAuthenticated =false;
       req.session.user = {userName :""};
+      
      
   }
       
 
     res.locals.isAuthenticated =req.session.isAuthenticated;
      res.locals.user = req.session.user;
+     res.url = req.url;
     //console.log(JSON.stringify(res.session));
     next();
 };
