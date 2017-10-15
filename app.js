@@ -50,16 +50,16 @@ app.set('view engine', 'ejs');
 app.set('view options', {
   defaultLayout: 'layout'
 });
-app.set('port', (process.env.PORT || 5000));
-app.use(compression()); //Compress all routes
-app.use(helmet());
+app.set('port', (process.env.PORT || 3000));
+//app.use(compression()); //Compress all routes
+//app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 // To parse every cookies and it must use before expressSession
 app.use(cookieParser(process.env.secret));
 app.use(session({
   secret: process.env.secret,
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
@@ -83,19 +83,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+app.use(passport.initialize());
+app.use(passport.session()); // always after express sesssion because Passport extends Express' session
 app.use(expressValidator()); // Add this after the bodyParser middlewares!
 app.use(csrf());
 app.use(util.csrf);
+app.use(util.authenticated);
 app.use(flash());
 
-
-app.use(passport.initialize());
-app.use(passport.session()); // always after express sesssion because Passport extends Express' session
 app.locals.siteName = "Express site";
 app.locals.routes = config.routes; 
 
-app.use(util.authenticated);
+
 //routes define 
+// app.all('/*', function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,HEAD,DELETE,OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'content-Type,x-requested-with');
+//   next();
+// });
+
 app.use('/', index);
 app.use('/auth',ensureLoggedOut(),auth);
 app.use(config.routes.chat,ensureLoggedIn('/auth/login') , chat);
@@ -117,3 +124,4 @@ app.use(function (err, req, res, next) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+

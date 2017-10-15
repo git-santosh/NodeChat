@@ -1,23 +1,30 @@
 var config = require('../config/routes');
 const User = require('../models/User').userModel;
 let localAuth = require('../passport/password');
-module.exports.csrf = (req, res, next) => {
+
+module.exports.csrf = (req, res, next) =>
+ {
     res.locals.token = req.csrfToken();
     next();
 };
 //We will store whether or not someone is authenticated in the session.
 module.exports.authenticated =(req, res, next) => {
-  console.log('secound')
+res.locals.url = req.protocol + '://'+req.headers.host;
   if(!req.isAuthenticated()){
-      console.log('count auth');
-      req.session.isAuthenticated =false;
-      req.session.user = {userName :""};  
+  
+      req.session.isAuthenticated = false;
+      res.locals.isAuthenticated = req.session.isAuthenticated;
+      res.locals.user =  req.user || "";  
   } 
-    res.locals.isAuthenticated =req.session.isAuthenticated;
-     res.locals.user = req.session.user;
-     res.locals.url = req.url;
-    //console.log(JSON.stringify(res.session));
+  else{
+
+    req.session.isAuthenticated = true;
+    res.locals.isAuthenticated = true;
+    res.locals.user =req.user;
+  }
+  console.log( req.session.isAuthenticated)
     next();
+    
 };
 
 //middleware to check to see if someone is authenticated

@@ -1,1 +1,27 @@
 <h1>chat</h1>
+<div class="row">
+
+        <!-- LOCAL INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span>User Info</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>email</td>
+                                <td>User Name</td>
+                                <td>Gender</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> <%= user.email %></td>
+                                <td> <%= user.provider_name %></td>
+                                <td><%= user.gender %></td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+
+    </div>
