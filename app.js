@@ -50,9 +50,9 @@ app.set('view engine', 'ejs');
 app.set('view options', {
   defaultLayout: 'layout'
 });
-app.set('port', (process.env.PORT || 3000));
-//app.use(compression()); //Compress all routes
-//app.use(helmet());
+app.set('port', (process.env.PORT || 5000));
+app.use(compression()); //Compress all routes
+app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 // To parse every cookies and it must use before expressSession
 app.use(cookieParser(process.env.secret));
